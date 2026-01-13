@@ -81,7 +81,8 @@ export const serverService = {
     const planConfig: Record<string, { ram: string; storage: string; maxPlayers: string }> = {
       'Starter': { ram: '2 GB', storage: '20 GB', maxPlayers: '10' },
       'Pro': { ram: '4 GB', storage: '50 GB', maxPlayers: '50' },
-      'Ultimate': { ram: '8 GB', storage: '100 GB', maxPlayers: 'Неограниченно' }
+      'Ultimate': { ram: '8 GB', storage: '100 GB', maxPlayers: 'Неограниченно' },
+      'VDS': { ram: '16 GB', storage: '500 GB', maxPlayers: 'Неограниченно' }
     };
 
     const config = planConfig[plan];
@@ -161,5 +162,17 @@ export const serverService = {
       servers[index].coOwners = servers[index].coOwners.filter((id: string) => id !== userId);
       localStorage.setItem(SERVERS_KEY, JSON.stringify(servers));
     }
+  },
+
+  updateServerName: (serverId: string, newName: string) => {
+    const servers = JSON.parse(localStorage.getItem(SERVERS_KEY) || '[]');
+    const index = servers.findIndex((s: Server) => s.id === serverId);
+    
+    if (index !== -1) {
+      servers[index].name = newName;
+      localStorage.setItem(SERVERS_KEY, JSON.stringify(servers));
+      return true;
+    }
+    return false;
   }
 };

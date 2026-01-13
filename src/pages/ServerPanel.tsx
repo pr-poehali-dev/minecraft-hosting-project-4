@@ -15,6 +15,7 @@ interface FileItem {
   name: string;
   type: 'file' | 'folder';
   size?: string;
+  content?: string;
   children?: FileItem[];
 }
 
@@ -35,9 +36,24 @@ const mockFiles: FileItem[] = [
       { name: 'world_nether', type: 'folder', children: [] }
     ]
   },
-  { name: 'server.properties', type: 'file', size: '1.2 KB' },
-  { name: 'bukkit.yml', type: 'file', size: '845 B' },
-  { name: 'spigot.yml', type: 'file', size: '1.5 KB' }
+  { 
+    name: 'server.properties', 
+    type: 'file', 
+    size: '1.2 KB',
+    content: 'server-port=25565\nmax-players=20\ndifficulty=normal\ngamemode=survival\npvp=true\nonline-mode=true'
+  },
+  { 
+    name: 'bukkit.yml', 
+    type: 'file', 
+    size: '845 B',
+    content: 'settings:\n  allow-end: true\n  warn-on-overload: true\n  permissions-file: permissions.yml'
+  },
+  { 
+    name: 'spigot.yml', 
+    type: 'file', 
+    size: '1.5 KB',
+    content: 'config-version: 12\nsettings:\n  debug: false\n  save-user-cache-on-stop-only: false\nmessages:\n  whitelist: You are not whitelisted on this server!'
+  }
 ];
 
 export default function ServerPanel() {
@@ -50,6 +66,10 @@ export default function ServerPanel() {
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [cpuUsage, setCpuUsage] = useState(45);
   const [ramUsage, setRamUsage] = useState(1200);
+  const [editingFile, setEditingFile] = useState<string | null>(null);
+  const [fileContent, setFileContent] = useState('');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [newServerName, setNewServerName] = useState('');
   const consoleEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -180,6 +200,26 @@ export default function ServerPanel() {
     setCurrentPath(currentPath.slice(0, -1));
   };
 
+  const openFileEditor = (file: FileItem) => {
+    if (file.type === 'file') {
+      setEditingFile(file.name);
+      setFileContent(file.content || '');
+    }
+  };
+
+  const saveFile = () => {
+    alert('Файл сохранен!');
+    setEditingFile(null);
+  };
+
+  const handleSaveServerName = () => {
+    if (!server || !newServerName.trim()) return;
+    
+    serverService.updateServerName(server.id, newServerName);
+    setServer({ ...server, name: newServerName });
+    setIsEditingName(false);
+  };
+
   if (!server) return null;
 
   const ramPercent = (ramUsage / 2048) * 100;
@@ -202,7 +242,37 @@ export default function ServerPanel() {
                 <Icon name="Server" size={20} className="text-primary-foreground" />
               </div>
               <div>
-                <div className="font-heading font-bold">{server.name}</div>
+                {isEditingName ? (
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={newServerName}
+                      onChange={(e) => setNewServerName(e.target.value)}
+                      className="h-7 w-40"
+                      autoFocus
+                    />
+                    <Button size="sm" variant="ghost" onClick={handleSaveServerName}>
+                      <Icon name="Check" size={14} />
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setIsEditingName(false)}>
+                      <Icon name="X" size={14} />
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <div className="font-heading font-bold">{server.name}</div>
+                    <Button 
+                      size="sm" 
+                      variant="ghost" 
+                      className="h-6 w-6 p-0"
+                      onClick={() => {
+                        setNewServerName(server.name);
+                        setIsEditingName(true);
+                      }}
+                    >
+                      <Icon name="Pencil" size={12} />
+                    </Button>
+                  </div>
+                )}
                 <div className="text-xs text-muted-foreground">{server.domain}</div>
               </div>
             </div>
@@ -307,64 +377,97 @@ export default function ServerPanel() {
           </TabsContent>
 
           <TabsContent value="files" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-heading">Файловый менеджер</CardTitle>
-                <CardDescription>Управление файлами сервера</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    {currentPath.length > 0 && (
-                      <Button variant="outline" size="sm" onClick={goBack}>
-                        <Icon name="ArrowLeft" size={16} className="mr-2" />
-                        Назад
+            {editingFile ? (
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="font-heading">Редактор файла</CardTitle>
+                      <CardDescription>{editingFile}</CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button size="sm" onClick={saveFile}>
+                        <Icon name="Save" size={16} className="mr-2" />
+                        Сохранить
                       </Button>
-                    )}
-                    <div className="text-sm text-muted-foreground">
-                      /{currentPath.join('/')}
+                      <Button size="sm" variant="outline" onClick={() => setEditingFile(null)}>
+                        <Icon name="X" size={16} className="mr-2" />
+                        Закрыть
+                      </Button>
                     </div>
                   </div>
+                </CardHeader>
+                <CardContent>
+                  <textarea
+                    value={fileContent}
+                    onChange={(e) => setFileContent(e.target.value)}
+                    className="w-full h-96 p-4 font-mono text-sm bg-black text-gray-300 rounded-md border"
+                    spellCheck={false}
+                  />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="font-heading">Файловый менеджер</CardTitle>
+                  <CardDescription>Управление файлами сервера</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      {currentPath.length > 0 && (
+                        <Button variant="outline" size="sm" onClick={goBack}>
+                          <Icon name="ArrowLeft" size={16} className="mr-2" />
+                          Назад
+                        </Button>
+                      )}
+                      <div className="text-sm text-muted-foreground">
+                        /{currentPath.join('/')}
+                      </div>
+                    </div>
 
-                  <div className="border rounded-lg">
-                    {getCurrentFiles().map((file, i) => (
-                      <div
-                        key={i}
-                        className="flex items-center justify-between p-3 hover:bg-muted cursor-pointer border-b last:border-0"
-                        onClick={() => file.type === 'folder' && openFolder(file.name)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Icon 
-                            name={file.type === 'folder' ? 'Folder' : 'FileText'} 
-                            size={20} 
-                            className={file.type === 'folder' ? 'text-primary' : 'text-muted-foreground'}
-                          />
-                          <div>
-                            <div className="font-medium">{file.name}</div>
-                            {file.size && <div className="text-xs text-muted-foreground">{file.size}</div>}
+                    <div className="border rounded-lg">
+                      {getCurrentFiles().map((file, i) => (
+                        <div
+                          key={i}
+                          className="flex items-center justify-between p-3 hover:bg-muted border-b last:border-0"
+                        >
+                          <div 
+                            className="flex items-center gap-3 flex-1 cursor-pointer"
+                            onClick={() => file.type === 'folder' && openFolder(file.name)}
+                          >
+                            <Icon 
+                              name={file.type === 'folder' ? 'Folder' : 'FileText'} 
+                              size={20} 
+                              className={file.type === 'folder' ? 'text-primary' : 'text-muted-foreground'}
+                            />
+                            <div>
+                              <div className="font-medium">{file.name}</div>
+                              {file.size && <div className="text-xs text-muted-foreground">{file.size}</div>}
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            {file.type === 'file' && (
+                              <>
+                                <Button variant="ghost" size="sm" onClick={() => openFileEditor(file)}>
+                                  <Icon name="Eye" size={16} />
+                                </Button>
+                                <Button variant="ghost" size="sm">
+                                  <Icon name="Download" size={16} />
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => openFileEditor(file)}>
+                                  <Icon name="Edit" size={16} />
+                                </Button>
+                              </>
+                            )}
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          {file.type === 'file' && (
-                            <>
-                              <Button variant="ghost" size="sm">
-                                <Icon name="Eye" size={16} />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Icon name="Download" size={16} />
-                              </Button>
-                              <Button variant="ghost" size="sm">
-                                <Icon name="Edit" size={16} />
-                              </Button>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="monitoring" className="space-y-4">

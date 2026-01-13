@@ -148,7 +148,7 @@ export default function Index() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
             {/* Starter Plan */}
             <Card className="animate-scale-in hover:shadow-lg transition-shadow">
               <CardHeader>
@@ -287,6 +287,57 @@ export default function Index() {
                   className="w-full" 
                   variant="outline"
                   onClick={() => handlePlanSelect({ name: 'Ultimate', price: '1299₽' })}
+                >
+                  Выбрать план
+                </Button>
+              </CardFooter>
+            </Card>
+
+            {/* VDS Plan */}
+            <Card className="animate-scale-in hover:shadow-lg transition-shadow border-2 border-primary">
+              <CardHeader>
+                <div className="flex items-center justify-between mb-2">
+                  <CardTitle className="font-heading">VDS</CardTitle>
+                  <Icon name="Server" size={20} className="text-primary" />
+                </div>
+                <CardDescription>Виртуальный выделенный сервер</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <span className="font-heading text-4xl font-bold">2499₽</span>
+                  <span className="text-muted-foreground">/месяц</span>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-start gap-2">
+                    <Icon name="Check" size={18} className="text-primary mt-0.5" />
+                    <span className="text-sm">16 ГБ RAM</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="Check" size={18} className="text-primary mt-0.5" />
+                    <span className="text-sm">500 ГБ SSD</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="Check" size={18} className="text-primary mt-0.5" />
+                    <span className="text-sm">Неограниченно игроков</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="Check" size={18} className="text-primary mt-0.5" />
+                    <span className="text-sm">Полный root доступ</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Icon name="Check" size={18} className="text-primary mt-0.5" />
+                    <span className="text-sm">Выделенные ресурсы</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="Check" size={18} className="text-primary mt-0.5" />
+                    <span className="text-sm">Максимальная производительность</span>
+                  </li>
+                </ul>
+              </CardContent>
+              <CardFooter>
+                <Button 
+                  className="w-full"
+                  onClick={() => handlePlanSelect({ name: 'VDS', price: '2499₽' })}
                 >
                   Выбрать план
                 </Button>
