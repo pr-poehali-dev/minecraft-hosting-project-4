@@ -208,35 +208,7 @@ export default function ServerPanel() {
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
-            <Button 
-              size="sm" 
-              onClick={startServer} 
-              disabled={server.status === 'online' || server.status === 'starting'}
-              className="bg-green-600 hover:bg-green-700 text-white"
-            >
-              <Icon name="Play" size={16} className="mr-2" />
-              Старт
-            </Button>
-            <Button 
-              size="sm" 
-              variant="secondary"
-              onClick={restartServer}
-              disabled={server.status === 'offline' || server.status === 'starting' || server.status === 'stopping'}
-            >
-              <Icon name="RotateCw" size={16} className="mr-2" />
-              Рестарт
-            </Button>
-            <Button 
-              size="sm" 
-              onClick={stopServer}
-              disabled={server.status === 'offline' || server.status === 'stopping'}
-              className="bg-red-600 hover:bg-red-700 text-white"
-            >
-              <Icon name="Square" size={16} className="mr-2" />
-              Стоп
-            </Button>
-          </div>
+          <div />
         </div>
       </header>
 
@@ -267,7 +239,44 @@ export default function ServerPanel() {
                 <CardTitle className="font-heading">Консоль сервера</CardTitle>
                 <CardDescription>Управление сервером через команды</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                  <Button 
+                    size="sm" 
+                    onClick={startServer} 
+                    disabled={server.status === 'online' || server.status === 'starting'}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    <Icon name="Play" size={16} className="mr-2" />
+                    Старт
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="secondary"
+                    onClick={restartServer}
+                    disabled={server.status === 'offline' || server.status === 'starting' || server.status === 'stopping'}
+                  >
+                    <Icon name="RotateCw" size={16} className="mr-2" />
+                    Рестарт
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    onClick={stopServer}
+                    disabled={server.status === 'offline' || server.status === 'stopping'}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                  >
+                    <Icon name="Square" size={16} className="mr-2" />
+                    Стоп
+                  </Button>
+                  <Separator orientation="vertical" className="h-8" />
+                  <div className="flex items-center gap-2 ml-auto">
+                    <div className={`w-2 h-2 rounded-full ${server.status === 'online' ? 'bg-green-500' : server.status === 'offline' ? 'bg-gray-400' : 'bg-yellow-500'} animate-pulse`}></div>
+                    <span className="text-sm font-medium">
+                      {server.status === 'online' ? 'Онлайн' : server.status === 'offline' ? 'Офлайн' : server.status === 'starting' ? 'Запуск...' : 'Остановка...'}
+                    </span>
+                  </div>
+                </div>
+
                 <ScrollArea className="h-96 w-full rounded-md border bg-black p-4 font-mono text-sm">
                   <div className="space-y-1">
                     {consoleLog.length === 0 ? (
