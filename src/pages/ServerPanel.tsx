@@ -203,7 +203,7 @@ export default function ServerPanel() {
               </div>
               <div>
                 <div className="font-heading font-bold">{server.name}</div>
-                <div className="text-xs text-muted-foreground">{server.ip}:{server.port}</div>
+                <div className="text-xs text-muted-foreground">{server.domain}</div>
               </div>
             </div>
           </div>
@@ -437,61 +437,104 @@ export default function ServerPanel() {
           <TabsContent value="ftp" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle className="font-heading">SFTP / FTP доступ</CardTitle>
-                <CardDescription>Данные для подключения к серверу</CardDescription>
+                <CardTitle className="font-heading">Подключение к серверу</CardTitle>
+                <CardDescription>Данные для подключения через SFTP/FTP и игра</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-4">
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">SFTP хост</div>
-                    <div className="flex gap-2">
-                      <Input value={`sftp.hosting.ru`} readOnly />
-                      <Button variant="outline" size="sm">
-                        <Icon name="Copy" size={16} />
-                      </Button>
+              <CardContent className="space-y-6">
+                <div className="space-y-4">
+                  <h4 className="text-sm font-semibold">Подключение к игре</h4>
+                  <div className="grid gap-4">
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium">Домен</div>
+                      <div className="flex gap-2">
+                        <Input value={server.domain} readOnly />
+                        <Button variant="outline" size="sm">
+                          <Icon name="Copy" size={16} />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Порт</div>
-                    <div className="flex gap-2">
-                      <Input value="22" readOnly />
-                      <Button variant="outline" size="sm">
-                        <Icon name="Copy" size={16} />
-                      </Button>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium">IP адрес (локальная сеть)</div>
+                      <div className="flex gap-2">
+                        <Input value={`${server.ip}:${server.port}`} readOnly className="font-mono" />
+                        <Button variant="outline" size="sm">
+                          <Icon name="Copy" size={16} />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Логин</div>
-                    <div className="flex gap-2">
-                      <Input value={`server_${server.id}`} readOnly />
-                      <Button variant="outline" size="sm">
-                        <Icon name="Copy" size={16} />
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Пароль</div>
-                    <div className="flex gap-2">
-                      <Input value="••••••••••••" readOnly type="password" />
-                      <Button variant="outline" size="sm">
-                        <Icon name="Eye" size={16} />
-                      </Button>
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium">Мир</div>
+                      <div className="flex gap-2">
+                        <Input value={server.world} readOnly />
+                        <Button variant="outline" size="sm">
+                          <Icon name="Copy" size={16} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <Separator />
 
-                <div className="space-y-2">
-                  <div className="text-sm font-medium">FTP хост</div>
-                  <div className="flex gap-2">
-                    <Input value={`ftp.hosting.ru`} readOnly />
-                    <Button variant="outline" size="sm">
-                      <Icon name="Copy" size={16} />
-                    </Button>
+                <div className="space-y-4">
+                  <h4 className="text-sm font-semibold">SFTP доступ</h4>
+                  <div className="grid gap-4">
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium">SFTP хост</div>
+                      <div className="flex gap-2">
+                        <Input value={`sftp.hosting.ru`} readOnly />
+                        <Button variant="outline" size="sm">
+                          <Icon name="Copy" size={16} />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium">Порт</div>
+                      <div className="flex gap-2">
+                        <Input value="22" readOnly />
+                        <Button variant="outline" size="sm">
+                          <Icon name="Copy" size={16} />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium">Логин</div>
+                      <div className="flex gap-2">
+                        <Input value={`server_${server.id}`} readOnly />
+                        <Button variant="outline" size="sm">
+                          <Icon name="Copy" size={16} />
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="text-sm font-medium">Пароль</div>
+                      <div className="flex gap-2">
+                        <Input value="••••••••••••" readOnly type="password" />
+                        <Button variant="outline" size="sm">
+                          <Icon name="Eye" size={16} />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <h4 className="text-sm font-semibold">FTP доступ</h4>
+                  <div className="space-y-2">
+                    <div className="text-sm font-medium">FTP хост</div>
+                    <div className="flex gap-2">
+                      <Input value={`ftp.hosting.ru`} readOnly />
+                      <Button variant="outline" size="sm">
+                        <Icon name="Copy" size={16} />
+                      </Button>
+                    </div>
                   </div>
                 </div>
 

@@ -13,6 +13,8 @@ export interface Server {
   maxPlayers: string;
   ip: string;
   port: number;
+  domain: string;
+  world: string;
   status: 'online' | 'offline' | 'starting' | 'stopping';
   ownerId: string;
   coOwners: string[];
@@ -84,15 +86,21 @@ export const serverService = {
 
     const config = planConfig[plan];
     
+    const port = 1000 + Math.floor(Math.random() * 9000);
+    const localIp = `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+    const serverId = Math.random().toString(36).substr(2, 9);
+    
     const newServer: Server = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: serverId,
       name: `Server ${servers.length + 1}`,
       plan,
       ram: config.ram,
       storage: config.storage,
       maxPlayers: config.maxPlayers,
-      ip: `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
-      port: 25565,
+      ip: localIp,
+      port: port,
+      domain: `server-${serverId}.hosting.ru`,
+      world: 'world',
       status: 'offline',
       ownerId: userId,
       coOwners: [],

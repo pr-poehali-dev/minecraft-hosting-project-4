@@ -127,16 +127,20 @@ export default function Dashboard() {
                     <span className="font-medium">{getStatusText(server.status)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">IP адрес</span>
+                    <span className="text-muted-foreground">Домен</span>
+                    <span className="font-mono font-medium text-xs">{server.domain}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">IP:Порт</span>
                     <span className="font-mono font-medium">{server.ip}:{server.port}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Мир</span>
+                    <span className="font-medium">{server.world}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">RAM</span>
                     <span className="font-medium">{server.ram}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Игроки</span>
-                    <span className="font-medium">До {server.maxPlayers}</span>
                   </div>
                 </CardContent>
               </Card>
